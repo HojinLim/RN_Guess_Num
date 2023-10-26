@@ -1,46 +1,72 @@
-import { ImageBackground, SafeAreaView, StyleSheet } from "react-native";
-import StartGameScreen from "./screens/StartGameScreen";
-import { LinearGradient } from "expo-linear-gradient";
-import GameScreen from "./screens/GameScreen";
-import { useState } from "react";
-import Colors from "./constants/color";
+import { useState } from 'react';
+import { StyleSheet, ImageBackground, SafeAreaView } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useFonts } from 'expo-font';
+import AppLoading from 'expo-app-loading';
+
+import StartGameScreen from './screens/StartGameScreen';
+import GameScreen from './screens/GameScreen';
+import GameOverScreen from './screens/GameOverScreen';
+import Colors from './constants/color';
+
+
 
 export default function App() {
   const [userNumber, setUserNumber] = useState();
+  const [gameIsOver, setGameIsOver] = useState(true);
+
+  const [fontsLoaded] = useFonts({
+    'open-sans': require('./assets/fonts/OpenSans-Regular.ttf'),
+    'open-sans-bold': require('./assets/fonts/OpenSans-Bold.ttf'),
+  });
+
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  }
 
   function pickedNumberHandler(pickedNumber) {
     setUserNumber(pickedNumber);
+    setGameIsOver(false);
+  }
+
+  function gameOverHandler() {
+    setGameIsOver(true);
   }
 
   let screen = <StartGameScreen onPickNumber={pickedNumberHandler} />;
 
   if (userNumber) {
-    screen = <GameScreen userNumber={userNumber} />;
+    screen = (
+      <GameScreen userNumber={userNumber} onGameOver={gameOverHandler} />
+    );
   }
 
+  if (gameIsOver && userNumber) {
+    screen = <GameOverScreen />;
+  }
 
   return (
     <LinearGradient
-      colors={[Colors.green500, Colors.green600]}
-      style={styles.rootContainer}
+      colors={[Colors.primary700, Colors.accent500]}
+      style={styles.rootScreen}
     >
       <ImageBackground
-        style={styles.rootContainer}
-        imageStyle={styles.backgroundStyle}
-        source={require("./assets/images/background.png")}
+        source={require('./assets/images/background.png')}
         resizeMode="cover"
+        style={styles.rootScreen}
+        imageStyle={styles.backgroundImage}
       >
-        <SafeAreaView style={styles.rootContainer}>{screen}</SafeAreaView>
+        <SafeAreaView style={styles.rootScreen}>{screen}</SafeAreaView>
       </ImageBackground>
     </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
-  rootContainer: {
+  rootScreen: {
     flex: 1,
   },
-  backgroundStyle: {
+  backgroundImage: {
     opacity: 0.15,
   },
 });
