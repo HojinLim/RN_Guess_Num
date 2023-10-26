@@ -6,15 +6,18 @@ import { useState } from "react";
 import Colors from "./constants/color";
 
 export default function App() {
-  const [pickedNumber, setPickedNumber] = useState();
+  const [userNumber, setUserNumber] = useState();
 
-  let screen = <StartGameScreen onPickNumber={changeNumberHandler} />;
-  if (pickedNumber) {
-    screen = <GameScreen />;
+  function pickedNumberHandler(pickedNumber) {
+    setUserNumber(pickedNumber);
   }
-  function changeNumberHandler(number) {
-    setPickedNumber(number);
+
+  let screen = <StartGameScreen onPickNumber={pickedNumberHandler} />;
+
+  if (userNumber) {
+    screen = <GameScreen userNumber={userNumber} />;
   }
+
 
   return (
     <LinearGradient
