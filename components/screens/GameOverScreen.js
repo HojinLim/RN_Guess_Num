@@ -5,7 +5,6 @@ import PrimaryButton from '../components/ui/PrimaryButton';
 import Colors from '../constants/colors';
 
 function GameOverScreen({ roundsNumber, userNumber, onStartNewGame }) {
-
   return (
     <View style={styles.rootContainer}>
       <Title>GAME OVER!</Title>
